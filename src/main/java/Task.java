@@ -21,12 +21,8 @@ public class Task {
         return this.id;
     }
 
-    public String getStatusS() {
-        if (this.status) {
-            return "[X]";
-        } else {
-            return "[ ]";
-        }
+    public String getStatusIcon() {
+        return (this.status ? "X" : " "); // mark done task with X
     }
 
     public void markDone() {
@@ -39,9 +35,9 @@ public class Task {
 
     public void printTask() {
         System.out.print(this.id);
-        System.out.print(". ");
-        System.out.print(this.getStatusS());
-        System.out.print(" ");
+        System.out.print(". [");
+        System.out.print(this.getStatusIcon());
+        System.out.print("] ");
         System.out.println(this.name);
     }
 }
