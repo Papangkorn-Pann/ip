@@ -21,6 +21,10 @@ public class Task {
         return this.id;
     }
 
+    public String getTypeIcon() {
+        return " ";
+    }
+
     public String getStatusIcon() {
         return (this.status ? "X" : " "); // mark done task with X
     }
@@ -34,10 +38,12 @@ public class Task {
     }
 
     public void printTask() {
-        System.out.print(this.id);
-        System.out.print(". [");
-        System.out.print(this.getStatusIcon());
-        System.out.print("] ");
-        System.out.println(this.name);
+        System.out.println(getId() + ". [" + getTypeIcon() + "]["
+                + getStatusIcon() + "] " + getName()
+                + getExtraInfo());
+    }
+
+    public String getExtraInfo(){
+        return "";
     }
 }
