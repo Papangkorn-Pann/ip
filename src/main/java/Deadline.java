@@ -14,4 +14,9 @@ public class Deadline extends Task {
     public String getExtraInfo() {
         return (" (by: " + date + ")");
     }
+
+    @Override //to append date
+    public String toSaveFormat() {
+        return super.toSaveFormat() + " | " + date;
+    }
 }

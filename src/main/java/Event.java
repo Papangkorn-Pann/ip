@@ -16,4 +16,9 @@ public class Event extends Task {
     public String getExtraInfo() {
         return (" (from: " + start + " to: " + end + ")");
     }
+
+    @Override //to append from and to
+    public String toSaveFormat() {
+        return super.toSaveFormat() + " | " + start + " | " + end;
+    }
 }

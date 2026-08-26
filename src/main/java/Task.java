@@ -21,6 +21,10 @@ public class Task {
         return this.id;
     }
 
+    public Boolean getStatus() {
+        return this.status;
+    }
+
     public String getTypeIcon() {
         return " ";
     }
@@ -46,4 +50,9 @@ public class Task {
     public String getExtraInfo(){
         return "";
     }
+
+    public String toSaveFormat() {
+        return getTypeIcon() + " | " + (getStatus() ? "1" : "0") + " | " + getName();
+    }
+
 }
