@@ -24,6 +24,7 @@ public class Duke {
                     case "todo" -> addTodo(tasks, argument);
                     case "deadline" -> addDeadline(tasks, argument);
                     case "event" -> addEvent(tasks, argument);
+                    case "delete" -> deleteTask(tasks, argument);
                     default -> System.out.println("Quack?");
                 }
             } catch (DuckeException e) {
@@ -31,6 +32,11 @@ public class Duke {
             }
         }
         System.out.println("Quack quack! (bye bye)");
+    }
+
+    private static void printTaskCount(ArrayList<Task> tasks) {
+        System.out.println("Now you have " + tasks.size()
+                + (tasks.size() == 1 ? " task" : " tasks") + " in the list.");
     }
 
     private static void printList(ArrayList<Task> tasks) {
@@ -89,6 +95,7 @@ public class Duke {
         tasks.add(task);
         System.out.println("Added: ");
         task.printTask();
+        printTaskCount(tasks);
     }
 
     private static void addDeadline(ArrayList<Task> tasks, String info) throws DuckeException
@@ -110,6 +117,7 @@ public class Duke {
         tasks.add(task);
         System.out.println("Added: ");
         task.printTask();
+        printTaskCount(tasks);
     }
 
     private static void addEvent(ArrayList<Task> tasks, String info) throws DuckeException
@@ -134,5 +142,24 @@ public class Duke {
         tasks.add(task);
         System.out.println("Added: ");
         task.printTask();
+        printTaskCount(tasks);
+    }
+
+    private static void deleteTask(ArrayList<Task> tasks, String indexStr) throws DuckeException
+    {
+        if (indexStr.isBlank()) {
+            throw new DuckeException("Which task should I delete? (e.g. delete 2)");
+        }
+        try {
+            int index = Integer.parseInt(indexStr);
+            Task removed = tasks.remove(index - 1);   // remove returns the removed Task
+            System.out.println("Removed: ");
+            removed.printTask();
+            printTaskCount(tasks);
+        } catch (NumberFormatException e) {
+            throw new DuckeException("Please give a valid task number.");
+        } catch (IndexOutOfBoundsException e) {
+            throw new DuckeException("Quack! There's no task number " + indexStr + ".");
+        }
     }
 }
