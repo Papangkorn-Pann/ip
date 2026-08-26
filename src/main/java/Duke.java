@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.io.IOException;
 
 public class Duke {
     public static void main(String[] args) {
@@ -7,7 +8,14 @@ public class Duke {
         System.out.println("Hi, I am Ducke! Your quackbot!");
         System.out.println("Waddle you want me to do?");
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> tasks = new ArrayList<>();
+        Storage storage = new Storage("data/ducke.txt");
+        ArrayList<Task> tasks;
+        try {
+            tasks = storage.load();
+        } catch (IOException e) {
+            System.out.println("No previously saved tasks.");
+            tasks = new ArrayList<>();
+        }
 
         boolean isRunning = true;
         while (isRunning) {
@@ -29,11 +37,15 @@ public class Duke {
                     case DELETE -> deleteTask(tasks, argument);
                     default -> System.out.println("Quack?");
                 }
+                storage.save(tasks);
             } catch (IllegalArgumentException e) {
                 System.out.println("I don't understand your quack command.");
             } catch (DuckeException e) {
                 System.out.println(e.getMessage());
+            } catch (IOException e) {                       // ← save() can throw this
+                System.out.println("Couldn't save your tasks: " + e.getMessage());
             }
+
         }
         System.out.println("Quack quack! (bye bye)");
     }
