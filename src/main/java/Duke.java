@@ -16,17 +16,21 @@ public class Duke {
             String argument = input.length > 1 ? input[1] : "";
 
             try {
-                switch (keyword) {
-                    case "bye" -> isRunning = false;
-                    case "list" -> printList(tasks);
-                    case "mark" -> markTask(tasks, argument);
-                    case "unmark" -> unmarkTask(tasks, argument);
-                    case "todo" -> addTodo(tasks, argument);
-                    case "deadline" -> addDeadline(tasks, argument);
-                    case "event" -> addEvent(tasks, argument);
-                    case "delete" -> deleteTask(tasks, argument);
+                Command command = Command.valueOf(keyword.toUpperCase());  // "mark" → Command.MARK
+
+                switch (command) {
+                    case BYE -> isRunning = false;
+                    case LIST -> printList(tasks);
+                    case MARK -> markTask(tasks, argument);
+                    case UNMARK -> unmarkTask(tasks, argument);
+                    case TODO -> addTodo(tasks, argument);
+                    case DEADLINE -> addDeadline(tasks, argument);
+                    case EVENT -> addEvent(tasks, argument);
+                    case DELETE -> deleteTask(tasks, argument);
                     default -> System.out.println("Quack?");
                 }
+            } catch (IllegalArgumentException e) {
+                System.out.println("I don't understand your quack command.");
             } catch (DuckeException e) {
                 System.out.println(e.getMessage());
             }
@@ -61,9 +65,9 @@ public class Duke {
             task.markDone();
             task.printTask();
         } catch (NumberFormatException e) {
-            System.out.println("Quack! '" + indexStr + "' isn't a number. Try: mark 2");
+            throw new DuckeException("Quack! '" + indexStr + "' isn't a number. Try: mark 2");
         } catch (IndexOutOfBoundsException e) {
-            System.out.println("Quack! There's no task number " + indexStr + ".");
+            throw new DuckeException("Quack! There's no task number " + indexStr + ".");
         }
     }
 
@@ -79,9 +83,9 @@ public class Duke {
             task.unmarkDone();
             task.printTask();
         } catch (NumberFormatException e) {
-            System.out.println("Quack! '" + indexStr + "' isn't a number. Try: unmark 2");
+            throw new DuckeException("Quack! '" + indexStr + "' isn't a number. Try: unmark 2");
         } catch (IndexOutOfBoundsException e) {
-            System.out.println("Quack! There's no task number " + indexStr + ".");
+            throw new DuckeException("Quack! There's no task number " + indexStr + ".");
         }
     }
 
