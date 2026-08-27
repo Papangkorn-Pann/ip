@@ -1,24 +1,15 @@
 public class Task {
 
-    private static int count = 0;
-
     private String name;
-    private Integer id;
-    private Boolean status; //true is done, false is not done
+    private Boolean status;
 
     public Task(String name) {
-        count++;
         this.name = name;
-        this.id = count;
-        this.status = false; //default task completion to false
+        this.status = false;
     }
 
     public String getName() {
         return this.name;
-    }
-
-    public Integer getId() {
-        return this.id;
     }
 
     public Boolean getStatus() {
@@ -30,7 +21,7 @@ public class Task {
     }
 
     public String getStatusIcon() {
-        return (this.status ? "X" : " "); // mark done task with X
+        return (this.status ? "X" : " ");
     }
 
     public void markDone() {
@@ -41,18 +32,16 @@ public class Task {
         this.status = false;
     }
 
-    public void printTask() {
-        System.out.println(getId() + ". [" + getTypeIcon() + "]["
-                + getStatusIcon() + "] " + getName()
-                + getExtraInfo());
+    public String getExtraInfo() {
+        return "";
     }
 
-    public String getExtraInfo(){
-        return "";
+    @Override
+    public String toString() {
+        return "[" + getTypeIcon() + "][" + getStatusIcon() + "] " + getName() + getExtraInfo();
     }
 
     public String toSaveFormat() {
         return getTypeIcon() + " | " + (getStatus() ? "1" : "0") + " | " + getName();
     }
-
 }

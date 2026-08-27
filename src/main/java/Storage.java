@@ -17,7 +17,7 @@ public class Storage {
      * Reads the save file and rebuilds the list of tasks.
      * Returns an empty list if the file doesn't exist yet (e.g. first run).
      */
-    public ArrayList<Task> load() throws IOException {
+    public ArrayList<Task> load() throws IOException, DuckeException {
         ArrayList<Task> tasks = new ArrayList<>();
         File file = new File(filePath);
 
@@ -42,7 +42,7 @@ public class Storage {
      *   D | done | description | by
      *   E | done | description | from | to
      */
-    private Task parseTask(String line) {
+    private Task parseTask(String line) throws DuckeException {
         String[] parts = line.split(" \\| ");   // "\\|" escapes the regex-special '|'
         String type = parts[0];
         boolean isDone = parts[1].equals("1");

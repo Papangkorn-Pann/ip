@@ -12,7 +12,7 @@ public class Duke {
         ArrayList<Task> tasks;
         try {
             tasks = storage.load();
-        } catch (IOException e) {
+        } catch (IOException | DuckeException e) {
             System.out.println("No previously saved tasks.");
             tasks = new ArrayList<>();
         }
@@ -57,8 +57,8 @@ public class Duke {
 
     private static void printList(ArrayList<Task> tasks) {
         if (!tasks.isEmpty()) {
-            for (Task task : tasks) {
-                task.printTask();
+            for (int i = 0; i < tasks.size(); i++) {
+                System.out.println((i + 1) + ". " + tasks.get(i));
             }
         } else {
             System.out.println("No tasks. Life is ponderful");
@@ -75,7 +75,7 @@ public class Duke {
             Task task = tasks.get(index - 1);
             System.out.println("Quack! I've marked this task as done:");
             task.markDone();
-            task.printTask();
+            System.out.println(task);
         } catch (NumberFormatException e) {
             throw new DuckeException("Quack! '" + indexStr + "' isn't a number. Try: mark 2");
         } catch (IndexOutOfBoundsException e) {
@@ -93,7 +93,7 @@ public class Duke {
             Task task = tasks.get(index - 1);
             System.out.println("Quack! I've marked this task as not done yet");
             task.unmarkDone();
-            task.printTask();
+            System.out.println(task);
         } catch (NumberFormatException e) {
             throw new DuckeException("Quack! '" + indexStr + "' isn't a number. Try: unmark 2");
         } catch (IndexOutOfBoundsException e) {
@@ -110,7 +110,7 @@ public class Duke {
         Task task = new Todo(info);
         tasks.add(task);
         System.out.println("Added: ");
-        task.printTask();
+        System.out.println(task);
         printTaskCount(tasks);
     }
 
@@ -132,7 +132,7 @@ public class Duke {
         Task task = new Deadline(description, temp[1].trim());
         tasks.add(task);
         System.out.println("Added: ");
-        task.printTask();
+        System.out.println(task);
         printTaskCount(tasks);
     }
 
@@ -157,7 +157,7 @@ public class Duke {
         Task task = new Event(description, b[0].trim(), b[1].trim());
         tasks.add(task);
         System.out.println("Added: ");
-        task.printTask();
+        System.out.println(task);
         printTaskCount(tasks);
     }
 
@@ -170,7 +170,7 @@ public class Duke {
             int index = Integer.parseInt(indexStr);
             Task removed = tasks.remove(index - 1);   // remove returns the removed Task
             System.out.println("Removed: ");
-            removed.printTask();
+            System.out.println(removed);
             printTaskCount(tasks);
         } catch (NumberFormatException e) {
             throw new DuckeException("Please give a valid task number.");
