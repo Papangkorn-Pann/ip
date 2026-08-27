@@ -1,10 +1,21 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 public class Event extends Task {
-    private String start;
-    private String end;
-    public Event(String name, String start, String end) {
+    private static final DateTimeFormatter DISPLAY_FORMAT = DateTimeFormatter.ofPattern("MMM d yyyy");
+
+    private final LocalDate start;
+    private final LocalDate end;
+
+    public Event(String name, String start, String end) throws DuckeException {
         super(name);
-        this.start = start;
-        this.end = end;
+        try {
+            this.start = LocalDate.parse(start.trim());
+            this.end = LocalDate.parse(end.trim());
+        } catch (DateTimeParseException e) {
+            throw new DuckeException("Please use dates like 2019-10-15.");
+        }
     }
 
     @Override
@@ -14,10 +25,10 @@ public class Event extends Task {
 
     @Override
     public String getExtraInfo() {
-        return (" (from: " + start + " to: " + end + ")");
+        return " (from: " + start.format(DISPLAY_FORMAT) + " to: " + end.format(DISPLAY_FORMAT) + ")";
     }
 
-    @Override //to append from and to
+    @Override
     public String toSaveFormat() {
         return super.toSaveFormat() + " | " + start + " | " + end;
     }
