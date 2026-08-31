@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.io.IOException;
 
 public class Duke {
@@ -6,12 +5,12 @@ public class Duke {
         Ui ui = new Ui();
         ui.showWelcome();
         Storage storage = new Storage("data/ducke.txt");
-        ArrayList<Task> tasks;
+        TaskList tasks;
         try {
-            tasks = storage.load();
+            tasks = new TaskList(storage.load());
         } catch (IOException | DuckeException e) {
             ui.showError("No previously saved tasks.");
-            tasks = new ArrayList<>();
+            tasks = new TaskList();
         }
 
         boolean isRunning = true;
@@ -47,12 +46,12 @@ public class Duke {
         ui.showGoodbye();
     }
 
-    private static void printTaskCount(ArrayList<Task> tasks, Ui ui) {
+    private static void printTaskCount(TaskList tasks, Ui ui) {
         ui.show("Now you have " + tasks.size()
                 + (tasks.size() == 1 ? " task" : " tasks") + " in the list.");
     }
 
-    private static void printList(ArrayList<Task> tasks, Ui ui) {
+    private static void printList(TaskList tasks, Ui ui) {
         if (!tasks.isEmpty()) {
             for (int i = 0; i < tasks.size(); i++) {
                 ui.show((i + 1) + ". " + tasks.get(i));
@@ -62,7 +61,7 @@ public class Duke {
         }
     }
 
-    private static void markTask(ArrayList<Task> tasks, String indexStr, Ui ui) throws DuckeException {
+    private static void markTask(TaskList tasks, String indexStr, Ui ui) throws DuckeException {
         if (indexStr.isBlank()) {
             throw new DuckeException("Quack! Which task should I mark? (e.g. mark 2)");
         }
@@ -79,7 +78,7 @@ public class Duke {
         }
     }
 
-    private static void unmarkTask(ArrayList<Task> tasks, String indexStr, Ui ui) throws DuckeException {
+    private static void unmarkTask(TaskList tasks, String indexStr, Ui ui) throws DuckeException {
         if (indexStr.isBlank()) {
             throw new DuckeException("Quack! Which task should I unmark? (e.g. unmark 2)");
         }
@@ -96,7 +95,7 @@ public class Duke {
         }
     }
 
-    private static void addTodo(ArrayList<Task> tasks, String info, Ui ui) throws DuckeException {
+    private static void addTodo(TaskList tasks, String info, Ui ui) throws DuckeException {
         if (info.isBlank()) {
             throw new DuckeException("The description of a todo cannot be empty");
         }
@@ -107,7 +106,7 @@ public class Duke {
         printTaskCount(tasks, ui);
     }
 
-    private static void addDeadline(ArrayList<Task> tasks, String info, Ui ui) throws DuckeException {
+    private static void addDeadline(TaskList tasks, String info, Ui ui) throws DuckeException {
         String[] temp = info.split("/by", 2);
         String description = temp[0].trim();
 
@@ -125,7 +124,7 @@ public class Duke {
         printTaskCount(tasks, ui);
     }
 
-    private static void addEvent(ArrayList<Task> tasks, String info, Ui ui) throws DuckeException {
+    private static void addEvent(TaskList tasks, String info, Ui ui) throws DuckeException {
         String[] a = info.split("/from", 2);
         String description = a[0].trim();
 
@@ -148,13 +147,13 @@ public class Duke {
         printTaskCount(tasks, ui);
     }
 
-    private static void deleteTask(ArrayList<Task> tasks, String indexStr, Ui ui) throws DuckeException {
+    private static void deleteTask(TaskList tasks, String indexStr, Ui ui) throws DuckeException {
         if (indexStr.isBlank()) {
             throw new DuckeException("Which task should I delete? (e.g. delete 2)");
         }
         try {
             int index = Integer.parseInt(indexStr);
-            Task removed = tasks.remove(index - 1);
+            Task removed = tasks.delete(index - 1);
             ui.show("Removed: ");
             ui.show(removed.toString());
             printTaskCount(tasks, ui);
