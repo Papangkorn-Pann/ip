@@ -1,3 +1,5 @@
+package duke;
+
 public class Banner {
     public static void print() {
         String banner = " ____              _        \n"
