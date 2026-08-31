@@ -1,18 +1,23 @@
 import java.io.IOException;
 
 public class Duke {
-    public static void main(String[] args) {
-        Ui ui = new Ui();
-        ui.showWelcome();
-        Storage storage = new Storage("data/ducke.txt");
-        TaskList tasks;
+    private Ui ui;
+    private Storage storage;
+    private TaskList tasks;
+
+    public Duke(String filePath) {
+        ui = new Ui();
+        storage = new Storage(filePath);
         try {
             tasks = new TaskList(storage.load());
         } catch (IOException | DuckeException e) {
             ui.showError("No previously saved tasks.");
             tasks = new TaskList();
         }
+    }
 
+    public void run() {
+        ui.showWelcome();
         boolean isRunning = true;
         while (isRunning) {
             String fullCommand = ui.readCommand();
@@ -23,13 +28,13 @@ public class Duke {
 
                 switch (command) {
                     case BYE -> isRunning = false;
-                    case LIST -> printList(tasks, ui);
-                    case MARK -> markTask(tasks, argument, ui);
-                    case UNMARK -> unmarkTask(tasks, argument, ui);
-                    case TODO -> addTodo(tasks, argument, ui);
-                    case DEADLINE -> addDeadline(tasks, argument, ui);
-                    case EVENT -> addEvent(tasks, argument, ui);
-                    case DELETE -> deleteTask(tasks, argument, ui);
+                    case LIST -> printList();
+                    case MARK -> markTask(argument);
+                    case UNMARK -> unmarkTask(argument);
+                    case TODO -> addTodo(argument);
+                    case DEADLINE -> addDeadline(argument);
+                    case EVENT -> addEvent(argument);
+                    case DELETE -> deleteTask(argument);
                     default -> ui.show("Quack?");
                 }
                 storage.save(tasks);
@@ -42,12 +47,16 @@ public class Duke {
         ui.showGoodbye();
     }
 
-    private static void printTaskCount(TaskList tasks, Ui ui) {
+    public static void main(String[] args) {
+        new Duke("data/ducke.txt").run();
+    }
+
+    private void printTaskCount() {
         ui.show("Now you have " + tasks.size()
                 + (tasks.size() == 1 ? " task" : " tasks") + " in the list.");
     }
 
-    private static void printList(TaskList tasks, Ui ui) {
+    private void printList() {
         if (!tasks.isEmpty()) {
             for (int i = 0; i < tasks.size(); i++) {
                 ui.show((i + 1) + ". " + tasks.get(i));
@@ -57,7 +66,7 @@ public class Duke {
         }
     }
 
-    private static void markTask(TaskList tasks, String indexStr, Ui ui) throws DuckeException {
+    private void markTask(String indexStr) throws DuckeException {
         if (indexStr.isBlank()) {
             throw new DuckeException("Quack! Which task should I mark? (e.g. mark 2)");
         }
@@ -74,7 +83,7 @@ public class Duke {
         }
     }
 
-    private static void unmarkTask(TaskList tasks, String indexStr, Ui ui) throws DuckeException {
+    private void unmarkTask(String indexStr) throws DuckeException {
         if (indexStr.isBlank()) {
             throw new DuckeException("Quack! Which task should I unmark? (e.g. unmark 2)");
         }
@@ -91,7 +100,7 @@ public class Duke {
         }
     }
 
-    private static void addTodo(TaskList tasks, String info, Ui ui) throws DuckeException {
+    private void addTodo(String info) throws DuckeException {
         if (info.isBlank()) {
             throw new DuckeException("The description of a todo cannot be empty");
         }
@@ -99,10 +108,10 @@ public class Duke {
         tasks.add(task);
         ui.show("Added: ");
         ui.show(task.toString());
-        printTaskCount(tasks, ui);
+        printTaskCount();
     }
 
-    private static void addDeadline(TaskList tasks, String info, Ui ui) throws DuckeException {
+    private void addDeadline(String info) throws DuckeException {
         String[] temp = info.split("/by", 2);
         String description = temp[0].trim();
 
@@ -117,10 +126,10 @@ public class Duke {
         tasks.add(task);
         ui.show("Added: ");
         ui.show(task.toString());
-        printTaskCount(tasks, ui);
+        printTaskCount();
     }
 
-    private static void addEvent(TaskList tasks, String info, Ui ui) throws DuckeException {
+    private void addEvent(String info) throws DuckeException {
         String[] a = info.split("/from", 2);
         String description = a[0].trim();
 
@@ -140,10 +149,10 @@ public class Duke {
         tasks.add(task);
         ui.show("Added: ");
         ui.show(task.toString());
-        printTaskCount(tasks, ui);
+        printTaskCount();
     }
 
-    private static void deleteTask(TaskList tasks, String indexStr, Ui ui) throws DuckeException {
+    private void deleteTask(String indexStr) throws DuckeException {
         if (indexStr.isBlank()) {
             throw new DuckeException("Which task should I delete? (e.g. delete 2)");
         }
@@ -152,7 +161,7 @@ public class Duke {
             Task removed = tasks.delete(index - 1);
             ui.show("Removed: ");
             ui.show(removed.toString());
-            printTaskCount(tasks, ui);
+            printTaskCount();
         } catch (NumberFormatException e) {
             throw new DuckeException("Please give a valid task number.");
         } catch (IndexOutOfBoundsException e) {
