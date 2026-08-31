@@ -66,7 +66,7 @@ public class Storage {
      * Writes the whole task list to the save file, overwriting previous content.
      * Creates the parent folder (e.g. "data/") if it doesn't exist.
      */
-    public void save(ArrayList<Task> tasks) throws IOException {
+    public void save(TaskList tasks) throws IOException {
         File file = new File(filePath);
 
         File parent = file.getParentFile();
@@ -75,8 +75,8 @@ public class Storage {
         }
 
         FileWriter fw = new FileWriter(file);   // automatically creates filename.txt
-        for (Task task : tasks) {
-            fw.write(task.toSaveFormat() + "\n");
+        for (int i = 0; i < tasks.size(); i++) {
+            fw.write(tasks.get(i).toSaveFormat() + "\n");
         }
         fw.close();
     }
