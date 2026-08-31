@@ -15,12 +15,11 @@ public class Duke {
 
         boolean isRunning = true;
         while (isRunning) {
-            String[] input = ui.readCommand().split(" ", 2);
-            String keyword = input[0].toLowerCase();
-            String argument = input.length > 1 ? input[1] : "";
+            String fullCommand = ui.readCommand();
 
             try {
-                Command command = Command.valueOf(keyword.toUpperCase());
+                Command command = Parser.parseCommand(fullCommand);
+                String argument = Parser.parseArgument(fullCommand);
 
                 switch (command) {
                     case BYE -> isRunning = false;
@@ -34,14 +33,11 @@ public class Duke {
                     default -> ui.show("Quack?");
                 }
                 storage.save(tasks);
-            } catch (IllegalArgumentException e) {
-                ui.showError("I don't understand your quack command.");
             } catch (DuckeException e) {
                 ui.showError(e.getMessage());
             } catch (IOException e) {
                 ui.showError("Couldn't save your tasks: " + e.getMessage());
             }
-
         }
         ui.showGoodbye();
     }
