@@ -1,3 +1,5 @@
+package duke;
+
 public class Parser {
     public static Command parseCommand(String input) throws DuckeException {
         String keyword = input.split(" ", 2)[0].toUpperCase();
