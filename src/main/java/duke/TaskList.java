@@ -32,4 +32,14 @@ public class TaskList {
     public boolean isEmpty() {
         return tasks.isEmpty();
     }
+
+    public TaskList find(String keyword) {
+        ArrayList<Task> matches = new ArrayList<>();
+        for (int i = 0; i < size(); i++) {
+            if (get(i).getName().contains(keyword)) {
+                matches.add(get(i));
+            }
+        }
+        return new TaskList(matches);
+    }
 }

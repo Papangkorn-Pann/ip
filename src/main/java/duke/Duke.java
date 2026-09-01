@@ -37,6 +37,7 @@ public class Duke {
                     case DEADLINE -> addDeadline(argument);
                     case EVENT -> addEvent(argument);
                     case DELETE -> deleteTask(argument);
+                    case FIND -> findTasks(argument);
                     default -> ui.show("Quack?");
                 }
                 storage.save(tasks);
@@ -65,6 +66,21 @@ public class Duke {
             }
         } else {
             ui.show("No tasks. Life is ponderful");
+        }
+    }
+
+    private void findTasks(String keyword) throws DuckeException {
+        if (keyword.isBlank()) {
+            throw new DuckeException("Which quackword should I search for? (e.g. find book)");
+        }
+        TaskList matches = tasks.find(keyword);
+        if (matches.isEmpty()) {
+            ui.show("No quacking tasks found.");
+            return;
+        }
+        ui.show("Here are the quacking tasks in your list:");
+        for (int i = 0; i < matches.size(); i++) {
+            ui.show((i + 1) + ". " + matches.get(i));
         }
     }
 
@@ -142,4 +158,6 @@ public class Duke {
             throw new DuckeException("Quack! There's no task number " + indexStr + ".");
         }
     }
+
+
 }
