@@ -7,7 +7,7 @@ package duke;
 public class Task {
 
     private String name;
-    private Boolean status;
+    private boolean done;
 
     /**
      * Creates a task with the given description, initially not done.
@@ -16,7 +16,7 @@ public class Task {
      */
     public Task(String name) {
         this.name = name;
-        this.status = false;
+        this.done = false;
     }
 
     /**
@@ -33,8 +33,8 @@ public class Task {
      *
      * @return true if the task is marked done
      */
-    public Boolean getStatus() {
-        return this.status;
+    public boolean isDone() {
+        return this.done;
     }
 
     /**
@@ -52,21 +52,21 @@ public class Task {
      * @return "X" if the task is done, otherwise a blank space
      */
     public String getStatusIcon() {
-        return (this.status ? "X" : " ");
+        return (this.done ? "X" : " ");
     }
 
     /**
      * Marks this task as done.
      */
     public void markDone() {
-        this.status = true;
+        this.done = true;
     }
 
     /**
      * Marks this task as not done.
      */
     public void unmarkDone() {
-        this.status = false;
+        this.done = false;
     }
 
     /**
@@ -94,6 +94,6 @@ public class Task {
      * @return the save-format string
      */
     public String toSaveFormat() {
-        return getTypeIcon() + " | " + (getStatus() ? "1" : "0") + " | " + getName();
+        return getTypeIcon() + " | " + (isDone() ? "1" : "0") + " | " + getName();
     }
 }
