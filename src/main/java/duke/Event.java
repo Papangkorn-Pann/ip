@@ -20,6 +20,25 @@ public class Event extends Task {
         }
     }
 
+    public static Event of(String info) throws DuckeException {
+        String[] a = info.split("/from", 2);
+        String description = a[0].trim();
+
+        if (description.isBlank()) {
+            throw new DuckeException("Task description cannot be empty.");
+        }
+        if (a.length < 2) {
+            throw new DuckeException("An event needs /from and /to times. e.g. event meeting /from Mon /to Tue");
+        }
+
+        String[] b = a[1].split("/to", 2);
+        if (b.length < 2 || b[0].isBlank() || b[1].isBlank()) {
+            throw new DuckeException("An event needs /from and /to times. e.g. event meeting /from Mon /to Tue");
+        }
+
+        return new Event(description, b[0].trim(), b[1].trim());
+    }
+
     @Override
     public String getTypeIcon() {
         return "E";
