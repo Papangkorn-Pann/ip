@@ -4,11 +4,21 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+/**
+ * Represents a deadline task, which has a description and a due date.
+ */
 public class Deadline extends Task {
     private static final DateTimeFormatter DISPLAY_FORMAT = DateTimeFormatter.ofPattern("MMM d yyyy");
 
     private final LocalDate date;
 
+    /**
+     * Creates a deadline with the given description and due date.
+     *
+     * @param name the task description
+     * @param date the due date in ISO format (yyyy-mm-dd)
+     * @throws DuckeException if the date is not a valid yyyy-mm-dd date
+     */
     public Deadline(String name, String date) throws DuckeException {
         super(name);
         try {
@@ -18,6 +28,13 @@ public class Deadline extends Task {
         }
     }
 
+    /**
+     * Creates a Deadline from user input of the form "description /by date".
+     *
+     * @param info the argument typed by the user
+     * @return the created Deadline
+     * @throws DuckeException if the description is empty, the /by time is missing, or the date is invalid
+     */
     public static Deadline of(String info) throws DuckeException {
         String[] temp = info.split("/by", 2);
         String description = temp[0].trim();
