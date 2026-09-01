@@ -3,19 +3,19 @@ package duke;
 public class Task {
 
     private String name;
-    private Boolean status;
+    private boolean done;
 
     public Task(String name) {
         this.name = name;
-        this.status = false;
+        this.done = false;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public Boolean getStatus() {
-        return this.status;
+    public boolean isDone() {
+        return this.done;
     }
 
     public String getTypeIcon() {
@@ -23,15 +23,15 @@ public class Task {
     }
 
     public String getStatusIcon() {
-        return (this.status ? "X" : " ");
+        return (this.done ? "X" : " ");
     }
 
     public void markDone() {
-        this.status = true;
+        this.done = true;
     }
 
     public void unmarkDone() {
-        this.status = false;
+        this.done = false;
     }
 
     public String getExtraInfo() {
@@ -44,6 +44,6 @@ public class Task {
     }
 
     public String toSaveFormat() {
-        return getTypeIcon() + " | " + (getStatus() ? "1" : "0") + " | " + getName();
+        return getTypeIcon() + " | " + (isDone() ? "1" : "0") + " | " + getName();
     }
 }

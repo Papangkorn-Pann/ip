@@ -6,6 +6,8 @@ import java.time.format.DateTimeParseException;
 
 public class Event extends Task {
     private static final DateTimeFormatter DISPLAY_FORMAT = DateTimeFormatter.ofPattern("MMM d yyyy");
+    private static final String FORMAT_ERROR =
+            "An event needs /from and /to times. e.g. event meeting /from Mon /to Tue";
 
     private final LocalDate start;
     private final LocalDate end;
@@ -28,12 +30,12 @@ public class Event extends Task {
             throw new DuckeException("Task description cannot be empty.");
         }
         if (a.length < 2) {
-            throw new DuckeException("An event needs /from and /to times. e.g. event meeting /from Mon /to Tue");
+            throw new DuckeException(FORMAT_ERROR);
         }
 
         String[] b = a[1].split("/to", 2);
         if (b.length < 2 || b[0].isBlank() || b[1].isBlank()) {
-            throw new DuckeException("An event needs /from and /to times. e.g. event meeting /from Mon /to Tue");
+            throw new DuckeException(FORMAT_ERROR);
         }
 
         return new Event(description, b[0].trim(), b[1].trim());
