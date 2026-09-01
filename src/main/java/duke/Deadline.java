@@ -18,6 +18,20 @@ public class Deadline extends Task {
         }
     }
 
+    public static Deadline of(String info) throws DuckeException {
+        String[] temp = info.split("/by", 2);
+        String description = temp[0].trim();
+
+        if (description.isBlank()) {
+            throw new DuckeException("Task description cannot be empty.");
+        }
+        if (temp.length < 2 || temp[1].isBlank()) {
+            throw new DuckeException("A deadline needs a /by time. e.g. deadline return book /by Sunday");
+        }
+
+        return new Deadline(description, temp[1].trim());
+    }
+
     @Override
     public String getTypeIcon() {
         return "D";

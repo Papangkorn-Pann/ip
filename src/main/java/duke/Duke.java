@@ -103,10 +103,7 @@ public class Duke {
     }
 
     private void addTodo(String info) throws DuckeException {
-        if (info.isBlank()) {
-            throw new DuckeException("The description of a todo cannot be empty");
-        }
-        Task task = new Todo(info);
+        Task task = Todo.of(info);
         tasks.add(task);
         ui.show("Added: ");
         ui.show(task.toString());
@@ -114,17 +111,7 @@ public class Duke {
     }
 
     private void addDeadline(String info) throws DuckeException {
-        String[] temp = info.split("/by", 2);
-        String description = temp[0].trim();
-
-        if (description.isBlank()) {
-            throw new DuckeException("Task description cannot be empty.");
-        }
-        if (temp.length < 2 || temp[1].isBlank()) {
-            throw new DuckeException("A deadline needs a /by time. e.g. deadline return book /by Sunday");
-        }
-
-        Task task = new Deadline(description, temp[1].trim());
+        Task task = Deadline.of(info);
         tasks.add(task);
         ui.show("Added: ");
         ui.show(task.toString());
@@ -132,22 +119,7 @@ public class Duke {
     }
 
     private void addEvent(String info) throws DuckeException {
-        String[] a = info.split("/from", 2);
-        String description = a[0].trim();
-
-        if (description.isBlank()) {
-            throw new DuckeException("Task description cannot be empty.");
-        }
-        if (a.length < 2) {
-            throw new DuckeException("An event needs /from and /to times. e.g. event meeting /from Mon /to Tue");
-        }
-
-        String[] b = a[1].split("/to", 2);
-        if (b.length < 2 || b[0].isBlank() || b[1].isBlank()) {
-            throw new DuckeException("An event needs /from and /to times. e.g. event meeting /from Mon /to Tue");
-        }
-
-        Task task = new Event(description, b[0].trim(), b[1].trim());
+        Task task = Event.of(info);
         tasks.add(task);
         ui.show("Added: ");
         ui.show(task.toString());
