@@ -6,25 +6,35 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
-
+/**
+ * Loads tasks from, and saves tasks to, a text file on disk.
+ */
 public class Storage {
     private final String filePath;
 
+    /**
+     * Creates a Storage that reads from and writes to the given file.
+     *
+     * @param filePath location of the save file, e.g. "data/ducke.txt"
+     */
     public Storage(String filePath) {
-        this.filePath = filePath; // data/ducke.txt
+        this.filePath = filePath;
     }
 
     /**
      * Reads the save file and rebuilds the list of tasks.
-     * Returns an empty list if the file doesn't exist yet (e.g. first run).
+     * Returns an empty list if the file does not exist yet (e.g. first run).
+     *
+     * @return the tasks read from the file
+     * @throws IOException if the file exists but cannot be read
+     * @throws DuckeException if a saved line has an invalid format
      */
     public ArrayList<Task> load() throws IOException, DuckeException {
         ArrayList<Task> tasks = new ArrayList<>();
         File file = new File(filePath);
 
         if (!file.exists()) {
-            return tasks;  // nothing saved yet
+            return tasks;
         }
 
         Scanner sc = new Scanner(file);
@@ -40,12 +50,13 @@ public class Storage {
 
     /**
      * Converts one saved line back into the matching Task subclass.
+     * Expected formats:
      *   T | done | description
      *   D | done | description | by
      *   E | done | description | from | to
      */
     private Task parseTask(String line) throws DuckeException {
-        String[] parts = line.split(" \\| ");   // "\\|" escapes the regex-special '|'
+        String[] parts = line.split(" \\| ");
         String type = parts[0];
         boolean isDone = parts[1].equals("1");
         String name = parts[2];
@@ -66,17 +77,20 @@ public class Storage {
 
     /**
      * Writes the whole task list to the save file, overwriting previous content.
-     * Creates the parent folder (e.g. "data/") if it doesn't exist.
+     * Creates the parent folder (e.g. "data/") if it does not exist.
+     *
+     * @param tasks the tasks to save
+     * @throws IOException if the file cannot be written
      */
     public void save(TaskList tasks) throws IOException {
         File file = new File(filePath);
 
         File parent = file.getParentFile();
         if (parent != null) {
-            parent.mkdirs(); //calling this to create parent folder of text file if not exists
+            parent.mkdirs();
         }
 
-        FileWriter fw = new FileWriter(file);   // automatically creates filename.txt
+        FileWriter fw = new FileWriter(file);
         for (int i = 0; i < tasks.size(); i++) {
             fw.write(tasks.get(i).toSaveFormat() + "\n");
         }

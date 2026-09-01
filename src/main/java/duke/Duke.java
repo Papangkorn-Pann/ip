@@ -2,11 +2,20 @@ package duke;
 
 import java.io.IOException;
 
+/**
+ * Entry point and main driver of the Ducke chatbot.
+ * Wires together the Ui, Storage, and TaskList, and runs the command loop.
+ */
 public class Duke {
     private Ui ui;
     private Storage storage;
     private TaskList tasks;
 
+    /**
+     * Creates a Duke that loads its tasks from the given save file.
+     *
+     * @param filePath location of the save file
+     */
     public Duke(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
@@ -18,6 +27,9 @@ public class Duke {
         }
     }
 
+    /**
+     * Runs the main command loop, reading and executing commands until the user exits.
+     */
     public void run() {
         ui.showWelcome();
         boolean isRunning = true;
