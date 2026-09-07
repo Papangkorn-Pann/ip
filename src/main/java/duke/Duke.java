@@ -4,12 +4,14 @@ import java.io.IOException;
 
 /**
  * Entry point and main driver of the Ducke chatbot.
- * Wires together the Ui, Storage, and TaskList, and runs the command loop.
+ * Wires together the Ui, Storage, and TaskList, and produces responses for
+ * both the command-line and graphical interfaces.
  */
 public class Duke {
     private Ui ui;
     private Storage storage;
     private TaskList tasks;
+    private boolean isExit = false;
 
     /**
      * Creates a Duke that loads its tasks from the given save file.
@@ -27,85 +29,125 @@ public class Duke {
         }
     }
 
+    /** Creates a Duke using the default save file, for the graphical interface. */
+    public Duke() {
+        this("data/ducke.txt");
+    }
+
     /**
-     * Runs the main command loop, reading and executing commands until the user exits.
+     * Runs the command-line loop, reading and executing commands until the user exits.
      */
     public void run() {
         ui.showWelcome();
-        boolean isRunning = true;
-        while (isRunning) {
-            String fullCommand = ui.readCommand();
-
-            try {
-                Command command = Parser.parseCommand(fullCommand);
-                String argument = Parser.parseArgument(fullCommand);
-
-                switch (command) {
-                    case BYE -> isRunning = false;
-                    case LIST -> printList();
-                    case MARK -> markTask(argument);
-                    case UNMARK -> unmarkTask(argument);
-                    case TODO -> addTodo(argument);
-                    case DEADLINE -> addDeadline(argument);
-                    case EVENT -> addEvent(argument);
-                    case DELETE -> deleteTask(argument);
-                    case FIND -> findTasks(argument);
-                    default -> ui.show("Quack?");
-                }
-                storage.save(tasks);
-            } catch (DuckeException e) {
-                ui.showError(e.getMessage());
-            } catch (IOException e) {
-                ui.showError("Couldn't save your tasks: " + e.getMessage());
-            }
+        while (!isExit) {
+            String input = ui.readCommand();
+            ui.show(getResponse(input));
         }
-        ui.showGoodbye();
+    }
+
+    /**
+     * Processes one command and returns Ducke's response, for use by either interface.
+     *
+     * @param input the full command line entered by the user
+     * @return the response text to show the user
+     */
+    public String getResponse(String input) {
+        try {
+            Command command = Parser.parseCommand(input);
+            String argument = Parser.parseArgument(input);
+            String response = switch (command) {
+                case BYE -> {
+                    isExit = true;
+                    yield "Quack quack! (bye bye)";
+                }
+                case LIST -> listResponse();
+                case MARK -> markTask(argument);
+                case UNMARK -> unmarkTask(argument);
+                case TODO -> addTodo(argument);
+                case DEADLINE -> addDeadline(argument);
+                case EVENT -> addEvent(argument);
+                case DELETE -> deleteTask(argument);
+                case FIND -> findTasks(argument);
+                default -> "Quack?";
+            };
+            storage.save(tasks);
+            return response;
+        } catch (DuckeException e) {
+            return e.getMessage();
+        } catch (IOException e) {
+            return "Couldn't save your tasks: " + e.getMessage();
+        }
+    }
+
+    /**
+     * Returns whether the user has issued the exit command.
+     *
+     * @return true if Ducke should stop
+     */
+    public boolean isExit() {
+        return isExit;
+    }
+
+    /**
+     * Returns the welcome greeting shown when the chatbot starts.
+     *
+     * @return the greeting text
+     */
+    public String getWelcome() {
+        return "Hi, I am Ducke! Your quackbot!\nWaddle you want me to do?";
     }
 
     public static void main(String[] args) {
         new Duke("data/ducke.txt").run();
     }
 
-    private void printTaskCount() {
-        ui.show("Now you have " + tasks.size()
-                + (tasks.size() == 1 ? " task" : " tasks") + " in the list.");
+    private String addedMessage(Task task) {
+        return "Added: \n" + task + "\n" + taskCountMessage();
     }
 
-    private void printList() {
-        if (!tasks.isEmpty()) {
-            for (int i = 0; i < tasks.size(); i++) {
-                ui.show((i + 1) + ". " + tasks.get(i));
-            }
-        } else {
-            ui.show("No tasks. Life is ponderful");
+    private String taskCountMessage() {
+        return "Now you have " + tasks.size()
+                + (tasks.size() == 1 ? " task" : " tasks") + " in the list.";
+    }
+
+    private String listResponse() {
+        if (tasks.isEmpty()) {
+            return "No tasks. Life is ponderful";
         }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < tasks.size(); i++) {
+            if (i > 0) {
+                sb.append("\n");
+            }
+            sb.append(i + 1).append(". ").append(tasks.get(i));
+        }
+        return sb.toString();
     }
 
-    private void findTasks(String keyword) throws DuckeException {
+    private String findTasks(String keyword) throws DuckeException {
         if (keyword.isBlank()) {
             throw new DuckeException("Which quackword should I search for? (e.g. find book)");
         }
         TaskList matches = tasks.find(keyword);
         if (matches.isEmpty()) {
-            ui.show("No quacking tasks found.");
-            return;
+            return "No quacking tasks found.";
         }
-        ui.show("Here are the quacking tasks in your list:");
+        StringBuilder sb = new StringBuilder("Here are the quacking tasks in your list:");
         for (int i = 0; i < matches.size(); i++) {
-            ui.show((i + 1) + ". " + matches.get(i));
+            sb.append("\n").append(i + 1).append(". ").append(matches.get(i));
         }
+        return sb.toString();
     }
 
-    private void markTask(String indexStr) throws DuckeException {
+    private String markTask(String indexStr) throws DuckeException {
         if (indexStr.isBlank()) {
             throw new DuckeException("Quack! Which task should I mark? (e.g. mark 2)");
         }
         try {
             int index = Integer.parseInt(indexStr);
             Task task = tasks.get(index - 1);
-            ui.show("Quack! I've marked this task as done:");
             task.markDone();
-            ui.show(task.toString());
+            return "Quack! I've marked this task as done:\n" + task;
         } catch (NumberFormatException e) {
             throw new DuckeException("Quack! '" + indexStr + "' isn't a number. Try: mark 2");
         } catch (IndexOutOfBoundsException e) {
@@ -113,16 +155,15 @@ public class Duke {
         }
     }
 
-    private void unmarkTask(String indexStr) throws DuckeException {
+    private String unmarkTask(String indexStr) throws DuckeException {
         if (indexStr.isBlank()) {
             throw new DuckeException("Quack! Which task should I unmark? (e.g. unmark 2)");
         }
         try {
             int index = Integer.parseInt(indexStr);
             Task task = tasks.get(index - 1);
-            ui.show("Quack! I've marked this task as not done yet");
             task.unmarkDone();
-            ui.show(task.toString());
+            return "Quack! I've marked this task as not done yet\n" + task;
         } catch (NumberFormatException e) {
             throw new DuckeException("Quack! '" + indexStr + "' isn't a number. Try: unmark 2");
         } catch (IndexOutOfBoundsException e) {
@@ -130,46 +171,36 @@ public class Duke {
         }
     }
 
-    private void addTodo(String info) throws DuckeException {
+    private String addTodo(String info) throws DuckeException {
         Task task = Todo.of(info);
         tasks.add(task);
-        ui.show("Added: ");
-        ui.show(task.toString());
-        printTaskCount();
+        return addedMessage(task);
     }
 
-    private void addDeadline(String info) throws DuckeException {
+    private String addDeadline(String info) throws DuckeException {
         Task task = Deadline.of(info);
         tasks.add(task);
-        ui.show("Added: ");
-        ui.show(task.toString());
-        printTaskCount();
+        return addedMessage(task);
     }
 
-    private void addEvent(String info) throws DuckeException {
+    private String addEvent(String info) throws DuckeException {
         Task task = Event.of(info);
         tasks.add(task);
-        ui.show("Added: ");
-        ui.show(task.toString());
-        printTaskCount();
+        return addedMessage(task);
     }
 
-    private void deleteTask(String indexStr) throws DuckeException {
+    private String deleteTask(String indexStr) throws DuckeException {
         if (indexStr.isBlank()) {
             throw new DuckeException("Which task should I delete? (e.g. delete 2)");
         }
         try {
             int index = Integer.parseInt(indexStr);
             Task removed = tasks.delete(index - 1);
-            ui.show("Removed: ");
-            ui.show(removed.toString());
-            printTaskCount();
+            return "Removed: \n" + removed + "\n" + taskCountMessage();
         } catch (NumberFormatException e) {
             throw new DuckeException("Please give a valid task number.");
         } catch (IndexOutOfBoundsException e) {
             throw new DuckeException("Quack! There's no task number " + indexStr + ".");
         }
     }
-
-
 }
