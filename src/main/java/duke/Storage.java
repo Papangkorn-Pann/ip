@@ -63,10 +63,10 @@ public class Storage {
 
         Task task;
         switch (type) {
-            case "T" -> task = new Todo(name);
-            case "D" -> task = new Deadline(name, parts[3]);
-            case "E" -> task = new Event(name, parts[3], parts[4]);
-            default -> throw new IllegalArgumentException("Unknown task type in save file: " + type);
+        case "T" -> task = new Todo(name);
+        case "D" -> task = new Deadline(name, parts[3]);
+        case "E" -> task = new Event(name, parts[3], parts[4]);
+        default -> throw new IllegalArgumentException("Unknown task type in save file: " + type);
         }
 
         if (isDone) {

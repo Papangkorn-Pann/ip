@@ -54,6 +54,10 @@ public class MainWindow extends AnchorPane {
         }
     }
 
+    /**
+     * Initializes the window after its FXML has loaded: binds the scroll pane to
+     * auto-scroll to the newest message and applies the background image.
+     */
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
@@ -63,7 +67,7 @@ public class MainWindow extends AnchorPane {
         BackgroundSize backgroundSize = new BackgroundSize(
                 BackgroundSize.AUTO, BackgroundSize.AUTO,
                 false, false,
-                false, true);   // cover: fills the window and rescales as it resizes
+                false, true); // cover: fills the window and rescales as it resizes
         BackgroundImage backgroundImage = new BackgroundImage(
                 background,
                 BackgroundRepeat.NO_REPEAT,

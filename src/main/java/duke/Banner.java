@@ -1,6 +1,12 @@
 package duke;
 
+/**
+ * Displays the application's ASCII-art startup banner.
+ */
 public class Banner {
+    /**
+     * Prints the ASCII-art banner to standard output.
+     */
     public static void print() {
         String banner = " ____              _        \n"
                 + "|  _ \\ _   _  ____| | _____ \n"
