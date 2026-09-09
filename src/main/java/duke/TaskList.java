@@ -71,6 +71,13 @@ public class TaskList {
         return tasks.isEmpty();
     }
 
+    /**
+     * Returns a new {@code TaskList} containing every task whose name contains
+     * the given keyword.
+     *
+     * @param keyword the substring to search for within task names
+     * @return a {@code TaskList} of the matching tasks (empty if none match)
+     */
     public TaskList find(String keyword) {
         ArrayList<Task> matches = new ArrayList<>();
         for (int i = 0; i < size(); i++) {

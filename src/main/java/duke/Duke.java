@@ -56,19 +56,19 @@ public class Duke {
             Command command = Parser.parseCommand(input);
             String argument = Parser.parseArgument(input);
             String response = switch (command) {
-                case BYE -> {
-                    isExit = true;
-                    yield "Quack quack! (bye bye)";
-                }
-                case LIST -> listResponse();
-                case MARK -> markTask(argument);
-                case UNMARK -> unmarkTask(argument);
-                case TODO -> addTodo(argument);
-                case DEADLINE -> addDeadline(argument);
-                case EVENT -> addEvent(argument);
-                case DELETE -> deleteTask(argument);
-                case FIND -> findTasks(argument);
-                default -> "Quack?";
+            case BYE -> {
+                isExit = true;
+                yield "Quack quack! (bye bye)";
+            }
+            case LIST -> listResponse();
+            case MARK -> markTask(argument);
+            case UNMARK -> unmarkTask(argument);
+            case TODO -> addTodo(argument);
+            case DEADLINE -> addDeadline(argument);
+            case EVENT -> addEvent(argument);
+            case DELETE -> deleteTask(argument);
+            case FIND -> findTasks(argument);
+            default -> "Quack?";
             };
             storage.save(tasks);
             return response;
@@ -114,6 +114,7 @@ public class Duke {
         if (tasks.isEmpty()) {
             return "No tasks. Life is ponderful";
         }
+
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < tasks.size(); i++) {
             if (i > 0) {
