@@ -14,6 +14,7 @@ public class Duke {
     private Storage storage;
     private TaskList tasks;
     private boolean isExit = false;
+    private int invalidCount = 0;
 
     /**
      * Creates a Duke that loads its tasks from the given save file.
@@ -61,7 +62,8 @@ public class Duke {
             String response = switch (command) {
             case BYE -> {
                 isExit = true;
-                yield "Quack quack! (bye bye)";
+                yield "Quack quack! (bye bye)\nYou made " + invalidCount
+                        + (invalidCount == 1 ? " mistake" : " mistakes") + " this session.";
             }
             case LIST -> listResponse();
             case MARK -> markTask(argument);
@@ -76,9 +78,31 @@ public class Duke {
             storage.save(tasks);
             return response;
         } catch (DuckeException e) {
-            return e.getMessage();
+            invalidCount++;
+            return escalate(e.getMessage());
         } catch (IOException e) {
             return "Couldn't save your tasks: " + e.getMessage();
+        }
+    }
+
+    /**
+     * Wraps an error message with a tone that grows angrier the more invalid
+     * commands the user has entered this session.
+     *
+     * @param message the plain error message to show
+     * @return the error message adjusted for the current anger level
+     */
+    private String escalate(String message) {
+        if (invalidCount <= 2) {
+            return message;
+        } else if (invalidCount <= 5) {
+            return message + "\n(Mistake #" + invalidCount + ".)";
+        } else if (invalidCount <= 7) {
+            return message.toUpperCase() + "\n(Mistake #" + invalidCount + "!!)";
+        } else {
+            return message.toUpperCase()
+                    + "\nI am going to beat the quack out of you. (#"
+                    + invalidCount + ".)";
         }
     }
 
