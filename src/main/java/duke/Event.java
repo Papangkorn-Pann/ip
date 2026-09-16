@@ -12,8 +12,13 @@ public class Event extends Task {
     private static final String FORMAT_ERROR =
             "An event needs /from and /to times. e.g. event meeting /from Mon /to Tue";
 
+    private static final String FROM = "/from";
+    private static final String TO = "/to";
+
     private final LocalDate start;
     private final LocalDate end;
+
+
 
     /**
      * Creates an event with the given description, start date, and end date.
@@ -41,22 +46,22 @@ public class Event extends Task {
      * @throws DuckeException if the description is empty, a /from or /to marker is missing, or a date is invalid
      */
     public static Event of(String info) throws DuckeException {
-        String[] a = info.split("/from", 2);
-        String description = a[0].trim();
+        String[] descAndTimeRange = info.split(FROM, 2);
+        String description = descAndTimeRange[0].trim();
 
         if (description.isBlank()) {
             throw new DuckeException("Task description cannot be empty.");
         }
-        if (a.length < 2) {
+        if (descAndTimeRange.length < 2) {
             throw new DuckeException(FORMAT_ERROR);
         }
 
-        String[] b = a[1].split("/to", 2);
-        if (b.length < 2 || b[0].isBlank() || b[1].isBlank()) {
+        String[] timeRange = descAndTimeRange[1].split(TO, 2);
+        if (timeRange.length < 2 || timeRange[0].isBlank() || timeRange[1].isBlank()) {
             throw new DuckeException(FORMAT_ERROR);
         }
 
-        return new Event(description, b[0].trim(), b[1].trim());
+        return new Event(description, timeRange[0].trim(), timeRange[1].trim());
     }
 
     @Override

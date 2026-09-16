@@ -8,6 +8,8 @@ import java.io.IOException;
  * both the command-line and graphical interfaces.
  */
 public class Duke {
+    private static final String DEFAULT_SAVE_PATH = "data/ducke.txt";
+
     private Ui ui;
     private Storage storage;
     private TaskList tasks;
@@ -31,14 +33,14 @@ public class Duke {
 
     /** Creates a Duke using the default save file, for the graphical interface. */
     public Duke() {
-        this("data/ducke.txt");
+        this(DEFAULT_SAVE_PATH);
     }
 
     /**
      * Runs the command-line loop, reading and executing commands until the user exits.
      */
     public void run() {
-        ui.showWelcome();
+        ui.showWelcome(getWelcome());
         while (!isExit) {
             String input = ui.readCommand();
             ui.show(getResponse(input));
@@ -99,7 +101,7 @@ public class Duke {
     }
 
     public static void main(String[] args) {
-        new Duke("data/ducke.txt").run();
+        new Duke(DEFAULT_SAVE_PATH).run();
     }
 
     private String addedMessage(Task task) {
@@ -115,15 +117,7 @@ public class Duke {
         if (tasks.isEmpty()) {
             return "No tasks. Life is ponderful";
         }
-
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < tasks.size(); i++) {
-            if (i > 0) {
-                sb.append("\n");
-            }
-            sb.append(i + 1).append(". ").append(tasks.get(i));
-        }
-        return sb.toString();
+        return numberedList(tasks);
     }
 
     private String findTasks(String keyword) throws DuckeException {
@@ -134,45 +128,35 @@ public class Duke {
         if (matches.isEmpty()) {
             return "No quacking tasks found.";
         }
-        StringBuilder sb = new StringBuilder("Here are the quacking tasks in your list:");
-        for (int i = 0; i < matches.size(); i++) {
-            sb.append("\n").append(i + 1).append(". ").append(matches.get(i));
+        return "Here are the quacking tasks in your list:\n" + numberedList(matches);
+    }
+
+    /** Returns the given tasks as a newline-separated, 1-based numbered list. */
+    private String numberedList(TaskList list) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            if (i > 0) {
+                sb.append("\n");
+            }
+            sb.append(i + 1).append(". ").append(list.get(i));
         }
         return sb.toString();
     }
 
     private String markTask(String indexStr) throws DuckeException {
-        if (indexStr.isBlank()) {
-            throw new DuckeException("Quack! Which task should I mark? (e.g. mark 2)");
-        }
-        try {
-            int index = Integer.parseInt(indexStr);
-            Task task = tasks.get(index - 1);
-            task.markDone();
-            assert task.isDone() : "task should be done after markDone()";
-            return "Quack! I've marked this task as done:\n" + task;
-        } catch (NumberFormatException e) {
-            throw new DuckeException("Quack! '" + indexStr + "' isn't a number. Try: mark 2");
-        } catch (IndexOutOfBoundsException e) {
-            throw new DuckeException("Quack! There's no task number " + indexStr + ".");
-        }
+        String usageHint = "Quack! Which task should I mark? (e.g. mark 2)";
+        int index = parseTaskIndex(indexStr, usageHint);
+        Task task = tasks.get(index);
+        task.markDone();
+        return "Quack! I've marked this task as done:\n" + task;
     }
 
     private String unmarkTask(String indexStr) throws DuckeException {
-        if (indexStr.isBlank()) {
-            throw new DuckeException("Quack! Which task should I unmark? (e.g. unmark 2)");
-        }
-        try {
-            int index = Integer.parseInt(indexStr);
-            Task task = tasks.get(index - 1);
-            task.unmarkDone();
-            assert !task.isDone() : "task should not be done after unmarkDone()";
-            return "Quack! I've marked this task as not done yet\n" + task;
-        } catch (NumberFormatException e) {
-            throw new DuckeException("Quack! '" + indexStr + "' isn't a number. Try: unmark 2");
-        } catch (IndexOutOfBoundsException e) {
-            throw new DuckeException("Quack! There's no task number " + indexStr + ".");
-        }
+        String usageHint = "Quack! Which task should I unmark? (e.g. unmark 2)";
+        int index = parseTaskIndex(indexStr, usageHint);
+        Task task = tasks.get(index);
+        task.unmarkDone();
+        return "Quack! I've marked this task as not done yet\n" + task;
     }
 
     private String addTodo(String info) throws DuckeException {
@@ -194,17 +178,25 @@ public class Duke {
     }
 
     private String deleteTask(String indexStr) throws DuckeException {
+        String usageHint = "Which task should I delete? (e.g. delete 2)";
+        int index = parseTaskIndex(indexStr, usageHint);
+        Task removed = tasks.delete(index);
+        return "Removed: \n" + removed + "\n" + taskCountMessage();
+    }
+
+    /** Parses a 1-based task number from user input into a valid list index. */
+    private int parseTaskIndex(String indexStr, String usageHint) throws DuckeException {
         if (indexStr.isBlank()) {
-            throw new DuckeException("Which task should I delete? (e.g. delete 2)");
+            throw new DuckeException(usageHint);
         }
         try {
-            int index = Integer.parseInt(indexStr);
-            Task removed = tasks.delete(index - 1);
-            return "Removed: \n" + removed + "\n" + taskCountMessage();
+            int index = Integer.parseInt(indexStr) - 1;
+            if (index < 0 || index >= tasks.size()) {
+                throw new DuckeException("Quack! There's no task number " + indexStr + ".");
+            }
+            return index;
         } catch (NumberFormatException e) {
-            throw new DuckeException("Please give a valid task number.");
-        } catch (IndexOutOfBoundsException e) {
-            throw new DuckeException("Quack! There's no task number " + indexStr + ".");
+            throw new DuckeException("Quack! '" + indexStr + "' isn't a number.");
         }
     }
 }
