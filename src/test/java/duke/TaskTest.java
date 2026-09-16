@@ -1,11 +1,50 @@
 package duke;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 public class TaskTest {
+
+    // ---- Task base behaviour ----
+
+    @Test
+    public void markDone_setsStatusIcon() {
+        Task task = new Todo("read book");
+        task.markDone();
+        assertTrue(task.isDone());
+        assertEquals("[T][X] read book", task.toString());
+    }
+
+    @Test
+    public void unmarkDone_clearsStatusIcon() {
+        Task task = new Todo("read book");
+        task.markDone();
+        task.unmarkDone();
+        assertFalse(task.isDone());
+        assertEquals("[T][ ] read book", task.toString());
+    }
+
+    @Test
+    public void toSaveFormat_todoNotDone() {
+        assertEquals("T | 0 | read book", new Todo("read book").toSaveFormat());
+    }
+
+    @Test
+    public void toSaveFormat_deadlineDone() throws DuckeException {
+        Task deadline = Deadline.of("return book /by 2019-10-15");
+        deadline.markDone();
+        assertEquals("D | 1 | return book | 2019-10-15", deadline.toSaveFormat());
+    }
+
+    @Test
+    public void toSaveFormat_event() throws DuckeException {
+        Task event = Event.of("meeting /from 2019-10-01 /to 2019-10-02");
+        assertEquals("E | 0 | meeting | 2019-10-01 | 2019-10-02", event.toSaveFormat());
+    }
 
     // ---- Todo ----
 
