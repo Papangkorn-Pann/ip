@@ -57,6 +57,7 @@ public class Duke {
         try {
             Command command = Parser.parseCommand(input);
             String argument = Parser.parseArgument(input);
+            assert argument != null : "parseArgument never returns null";
             String response = switch (command) {
             case BYE -> {
                 isExit = true;
