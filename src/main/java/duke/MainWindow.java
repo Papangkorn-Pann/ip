@@ -7,7 +7,9 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -84,8 +86,21 @@ public class MainWindow extends AnchorPane {
      */
     public void setDuke(Duke d) {
         duke = d;
+        showBanner();
         dialogContainer.getChildren().add(
                 DialogBox.getDukeDialog(duke.getWelcome(), dukeImage));
+    }
+
+    /**
+     * Shows the ASCII-art banner in a monospaced label so its characters align.
+     */
+    private void showBanner() {
+        Label banner = new Label(Banner.getBanner());
+        banner.setStyle("-fx-font-family: 'Monospaced'; -fx-font-size: 11px;");
+        banner.setWrapText(false);
+        banner.setMaxWidth(Double.MAX_VALUE);
+        banner.setAlignment(Pos.CENTER);
+        dialogContainer.getChildren().add(banner);
     }
 
     /**
