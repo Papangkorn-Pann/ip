@@ -55,6 +55,7 @@ public class Duke {
         try {
             Command command = Parser.parseCommand(input);
             String argument = Parser.parseArgument(input);
+            assert argument != null : "parseArgument never returns null";
             String response = switch (command) {
             case BYE -> {
                 isExit = true;
@@ -148,6 +149,7 @@ public class Duke {
             int index = Integer.parseInt(indexStr);
             Task task = tasks.get(index - 1);
             task.markDone();
+            assert task.isDone() : "task should be done after markDone()";
             return "Quack! I've marked this task as done:\n" + task;
         } catch (NumberFormatException e) {
             throw new DuckeException("Quack! '" + indexStr + "' isn't a number. Try: mark 2");
@@ -164,6 +166,7 @@ public class Duke {
             int index = Integer.parseInt(indexStr);
             Task task = tasks.get(index - 1);
             task.unmarkDone();
+            assert !task.isDone() : "task should not be done after unmarkDone()";
             return "Quack! I've marked this task as not done yet\n" + task;
         } catch (NumberFormatException e) {
             throw new DuckeException("Quack! '" + indexStr + "' isn't a number. Try: unmark 2");
