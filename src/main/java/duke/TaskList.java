@@ -1,6 +1,7 @@
 package duke;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /**
  * Holds the list of tasks and provides operations to add, delete, and access them.
@@ -79,12 +80,9 @@ public class TaskList {
      * @return a {@code TaskList} of the matching tasks (empty if none match)
      */
     public TaskList find(String keyword) {
-        ArrayList<Task> matches = new ArrayList<>();
-        for (int i = 0; i < size(); i++) {
-            if (get(i).getName().contains(keyword)) {
-                matches.add(get(i));
-            }
-        }
+        ArrayList<Task> matches = tasks.stream()
+                .filter(task -> task.getName().contains(keyword))
+                .collect(Collectors.toCollection(ArrayList::new));
         return new TaskList(matches);
     }
 }
