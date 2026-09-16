@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 /**
@@ -21,6 +22,9 @@ import javafx.scene.layout.VBox;
  * gets its own grey rounded-rectangle background.
  */
 public class DialogBox extends HBox {
+    /** Maximum text width (px) before a line wraps, leaving room for the avatar and padding. */
+    private static final double MAX_LINE_WIDTH = 300.0;
+
     @FXML
     private VBox lineContainer;
     @FXML
@@ -70,6 +74,8 @@ public class DialogBox extends HBox {
     private void addLine(String content, String styleClass) {
         Label label = new Label(content);
         label.setWrapText(true);
+        label.setMaxWidth(MAX_LINE_WIDTH);
+        label.setMinHeight(Region.USE_PREF_SIZE);
         label.getStyleClass().add(styleClass);
         lineContainer.getChildren().add(label);
     }

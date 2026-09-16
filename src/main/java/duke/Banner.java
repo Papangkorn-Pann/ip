@@ -5,14 +5,22 @@ package duke;
  */
 public class Banner {
     /**
-     * Prints the ASCII-art banner to standard output.
+     * Returns the ASCII-art banner as a multi-line string.
+     *
+     * @return the banner text
      */
-    public static void print() {
-        String banner = " ____              _        \n"
+    public static String getBanner() {
+        return " ____              _        \n"
                 + "|  _ \\ _   _  ____| | _____ \n"
                 + "| | | | | | |/ ___| |/ / _ \\\n"
                 + "| |_| | |_| | |___    <  __/\n"
                 + "|____/ \\__,_|\\____|__\\_\\___|\n";
-        System.out.println(banner);
+    }
+
+    /**
+     * Prints the ASCII-art banner to standard output.
+     */
+    public static void print() {
+        System.out.println(getBanner());
     }
 }
