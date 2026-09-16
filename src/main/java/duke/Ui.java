@@ -25,19 +25,13 @@ public class Ui {
     }
 
     /**
-     * Shows the welcome banner and greeting.
+     * Shows the welcome banner followed by the given greeting.
+     *
+     * @param greeting the greeting text to display
      */
-    public void showWelcome() {
+    public void showWelcome(String greeting) {
         Banner.print();
-        System.out.println("Hi, I am Ducke! Your quackbot!");
-        System.out.println("Waddle you want me to do?");
-    }
-
-    /**
-     * Shows the farewell message.
-     */
-    public void showGoodbye() {
-        System.out.println("Quack quack! (bye bye)");
+        System.out.println(greeting);
     }
 
     /**

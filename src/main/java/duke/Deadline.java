@@ -10,6 +10,8 @@ import java.time.format.DateTimeParseException;
 public class Deadline extends Task {
     private static final DateTimeFormatter DISPLAY_FORMAT = DateTimeFormatter.ofPattern("MMM d yyyy");
 
+    private static final String BY = "/by";
+
     private final LocalDate date;
 
     /**
@@ -36,17 +38,17 @@ public class Deadline extends Task {
      * @throws DuckeException if the description is empty, the /by time is missing, or the date is invalid
      */
     public static Deadline of(String info) throws DuckeException {
-        String[] temp = info.split("/by", 2);
-        String description = temp[0].trim();
+        String[] descAndDue = info.split(BY, 2);
+        String description = descAndDue[0].trim();
 
         if (description.isBlank()) {
             throw new DuckeException("Task description cannot be empty.");
         }
-        if (temp.length < 2 || temp[1].isBlank()) {
+        if (descAndDue.length < 2 || descAndDue[1].isBlank()) {
             throw new DuckeException("A deadline needs a /by time. e.g. deadline return book /by Sunday");
         }
-
-        return new Deadline(description, temp[1].trim());
+        String due = descAndDue[1].trim();
+        return new Deadline(description, due);
     }
 
     @Override

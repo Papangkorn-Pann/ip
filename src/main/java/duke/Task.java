@@ -7,16 +7,16 @@ package duke;
 public class Task {
 
     private String name;
-    private boolean done;
+    private boolean isDone;
 
     /**
-     * Creates a task with the given description, initially not done.
+     * Creates a task with the given description, initially not isDone.
      *
      * @param name the task description
      */
     public Task(String name) {
         this.name = name;
-        this.done = false;
+        this.isDone = false;
     }
 
     /**
@@ -29,12 +29,13 @@ public class Task {
     }
 
     /**
-     * Returns whether the task is done.
+     * Returns whether the task is isDone.
      *
-     * @return true if the task is marked done
+     *
+     * @return true if the task is marked isDone
      */
     public boolean isDone() {
-        return this.done;
+        return this.isDone;
     }
 
     /**
@@ -49,24 +50,24 @@ public class Task {
     /**
      * Returns the status icon shown in the task list.
      *
-     * @return "X" if the task is done, otherwise a blank space
+     * @return "X" if the task is isDone, otherwise a blank space
      */
     public String getStatusIcon() {
-        return (this.done ? "X" : " ");
+        return (this.isDone ? "X" : " ");
     }
 
     /**
-     * Marks this task as done.
+     * Marks this task as isDone.
      */
     public void markDone() {
-        this.done = true;
+        this.isDone = true;
     }
 
     /**
-     * Marks this task as not done.
+     * Marks this task as not isDone.
      */
     public void unmarkDone() {
-        this.done = false;
+        this.isDone = false;
     }
 
     /**
