@@ -68,6 +68,7 @@ public class Storage {
         case "E" -> task = new Event(name, parts[3], parts[4]);
         default -> throw new IllegalArgumentException("Unknown task type in save file: " + type);
         }
+        assert task != null : "parseTask must assign a task for a valid type";
 
         if (isDone) {
             task.markDone();
