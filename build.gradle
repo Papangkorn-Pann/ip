@@ -71,4 +71,5 @@ shadowJar {
 
 run {
     standardInput = System.in
+    enableAssertions = true // run with -ea so assert statements are active
 }
