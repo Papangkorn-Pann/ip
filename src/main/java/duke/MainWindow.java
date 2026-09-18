@@ -65,7 +65,7 @@ public class MainWindow extends AnchorPane {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
 
         Image background = new Image(Objects.requireNonNull(
-                MainWindow.class.getResource("/images/bomb_background.png")).toExternalForm());
+                MainWindow.class.getResource("/images/pond_background.jpg")).toExternalForm());
         BackgroundSize backgroundSize = new BackgroundSize(
                 BackgroundSize.AUTO, BackgroundSize.AUTO,
                 false, false,
