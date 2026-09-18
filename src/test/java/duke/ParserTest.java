@@ -25,6 +25,18 @@ public class ParserTest {
     }
 
     @Test
+    public void parseCommand_shortAlias_returnsCommand() throws DuckeException {
+        assertEquals(Command.TODO, Parser.parseCommand("t read book"));
+        assertEquals(Command.DEADLINE, Parser.parseCommand("d return book /by 2019-10-15"));
+        assertEquals(Command.DELETE, Parser.parseCommand("del 2"));
+    }
+
+    @Test
+    public void parseCommand_aliasIsCaseInsensitive_returnsCommand() throws DuckeException {
+        assertEquals(Command.LIST, Parser.parseCommand("LS"));
+    }
+
+    @Test
     public void parseCommand_unknownKeyword_exceptionThrown() {
         assertThrows(DuckeException.class, () -> Parser.parseCommand("blah"));
     }
