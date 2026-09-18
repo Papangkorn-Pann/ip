@@ -10,11 +10,11 @@ saving your tasks automatically between sessions.
 ## Quick start
 
 1. Ensure you have **Java 25** installed on your computer.
-2. Download the latest `duke.jar` from the releases page.
+2. Download the latest `Ducke.jar` from the releases page.
 3. Copy the file to the folder you want to use as the home folder for Ducke.
 4. Open a command terminal, `cd` into that folder, and run:
    ```
-   java -jar duke.jar
+   java -jar Ducke.jar
    ```
 5. The GUI should appear in a few seconds. Type a command in the box and press
    Enter (or click **Send**) to run it. Try typing `help` to see what Ducke can do.
