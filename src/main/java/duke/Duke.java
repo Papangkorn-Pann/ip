@@ -73,6 +73,7 @@ public class Duke {
             case EVENT -> addEvent(argument);
             case DELETE -> deleteTask(argument);
             case FIND -> findTasks(argument);
+            case HELP -> helpResponse();
             default -> "Quack?";
             };
             storage.save(tasks);
@@ -135,6 +136,19 @@ public class Duke {
     private String taskCountMessage() {
         return "Now you have " + tasks.size()
                 + (tasks.size() == 1 ? " task" : " tasks") + " in the list.";
+    }
+
+    private String helpResponse() {
+        return "Here's what I understand:\n"
+                + "  todo <description>\n"
+                + "  deadline <description> /by <yyyy-mm-dd>\n"
+                + "  event <description> /from <yyyy-mm-dd> /to <yyyy-mm-dd>\n"
+                + "  list\n"
+                + "  mark <number>   |   unmark <number>\n"
+                + "  delete <number>\n"
+                + "  find <keyword>\n"
+                + "  help\n"
+                + "  bye";
     }
 
     private String listResponse() {
